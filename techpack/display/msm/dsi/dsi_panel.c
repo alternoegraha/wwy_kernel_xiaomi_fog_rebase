@@ -515,6 +515,10 @@ static int dsi_panel_power_on(struct dsi_panel *panel)
 		goto error_disable_vregs;
 	}
 
+	/* If LP11_INIT is set, skip panel reset here */
+	if (panel->lp11_init)
+		goto exit;
+
 	rc = dsi_panel_reset(panel);
 #ifdef CONFIG_TARGET_PROJECT_K7T
 	notifier_data.data = &power_status;
@@ -4324,10 +4328,6 @@ int dsi_panel_pre_prepare(struct dsi_panel *panel)
 
 	mutex_lock(&panel->panel_lock);
 
-	/* If LP11_INIT is set, panel will be powered up during prepare() */
-	if (panel->lp11_init)
-		goto error;
-
 	rc = dsi_panel_power_on(panel);
 	if (rc) {
 		DSI_ERR("[%s] panel power on failed, rc=%d\n", panel->name, rc);
@@ -4490,9 +4490,9 @@ int dsi_panel_prepare(struct dsi_panel *panel)
 	mutex_lock(&panel->panel_lock);
 
 	if (panel->lp11_init) {
-		rc = dsi_panel_power_on(panel);
+		rc = dsi_panel_reset(panel);
 		if (rc) {
-			DSI_ERR("[%s] panel power on failed, rc=%d\n",
+			DSI_ERR("[%s] panel reset failed, rc=%d\n",
 			       panel->name, rc);
 			goto error;
 		}
