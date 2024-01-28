@@ -290,7 +290,7 @@
 };
 
 &sde_dsi {
-	qcom,dsi-default-panel = <&dsi_td4330_truly_v2_video>;
+	qcom,dsi-default-panel = <&dsi_panel_c3q_35_02_0a_fhdp_video>;
 };
 
 &qupv3_se2_i2c {
@@ -528,7 +528,7 @@
 		};
 	};
 };
-
+/*
 &soc {
 	fingerprint: fpc1020 {
 		compatible = "fpc,fpc1020";
@@ -544,4 +544,55 @@
 		pinctrl-1 = <&fpc_reset_high>;
 		pinctrl-2 = <&fpc_int_low>;
 	};
+};*/
+/*	fpc1020 {
+		status = "ok";
+		compatible = "fpc,fpc1020";
+		interrupt-parent = <&tlmm>;
+		interrupts = <83 0>;
+		fpc,gpio_rst = <&tlmm 104 0>;
+		fpc,gpio_irq = <&tlmm 83 0>;
+		fpc,enable-on-boot;
+		pinctrl-names = "fpc1020_reset_reset", 
+				"fpc1020_reset_active", 
+				"fpc1020_irq_active";
+		pinctrl-0 = <&msm_gpio_104>;
+		pinctrl-1 = <&msm_gpio_104_output_high>;
+		pinctrl-2 = <&msm_gpio_83>;
+	};
+	
+	goodix_fp {
+		compatible = "goodix,fingerprint";
+		interrupt-parent = <&tlmm>;
+		interrupt = <83 0>;
+		vcc_spi_supply = <&pm6125_l9>;
+		vcc_ana_supply = <&pm6125_l9>;
+		vdd_io-supply = <&pm6125_l9>;
+		fp-gpio-irq = <&tlmm 83 0>;
+		fp-gpio-reset = <&tlmm 104 0>;
+		fp-gpio-pwr = <&tlmm 100 0>;
+		pinctrl-names = "goodix_reset_outputlow", "goodix_reset_outputhigh", "goodix_pwr_outputlow", "goodix_pwr_outputhigh";
+		pinctrl-0 = <&msm_gpio_104>;
+		pinctrl-1 = <&msm_gpio_104_output_high>;
+		pinctrl-2 = <&msm_gpio_100>;
+		pinctrl-3 = <&msm_gpio_100_output_high>;
+		status = "okay";
+	};
+
+	silead_fp {
+		compatible = "sil,silead_fp";
+		qcom,qup-id = <0x06>;
+		spi-max-frequency = <0x493e00>;
+		reg = <0x00>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <0x53 0x2008>;
+		avdd-gpios = <&tlmm 100 1>;
+		avdd-supply = <&pm6125_l9>;
+		vddio-supply = <&pm6125_l9>;
+		rst-gpios = <&tlmm 104 0>;
+		irq-gpios = <&tlmm 83 8200>;
+		regulator-always-on;
+	};
+
 };
+*/

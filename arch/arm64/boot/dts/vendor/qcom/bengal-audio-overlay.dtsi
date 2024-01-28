@@ -265,19 +265,16 @@ fsa4480:
 		status = "disable";
 	};
 
-	aw87xxx_pa_5B@5B {
-		compatible = "awinic,aw87xxx_pa";
-		reg = <0x5b>;		
-		reset-gpio = <&tlmm 35 0>;
-		dev_index = <0>;		
-		status = "okay";
-	};
-
 	aw87xxx_pa_58@58 {
 		compatible = "awinic,aw87xxx_pa";
 		reg = <0x58>;
-		reset-gpio = <&tlmm 106 0>;
-		dev_index = <1>;		
+		dev_index = <0>;
+		status = "okay";
+	};
+
+	fs15xx@34 {
+		compatible = "foursemi,fs15xx";
+		reg = <0x34>;
 		status = "okay";
 	};
 };
@@ -295,12 +292,7 @@ fsa4480:
 		pinctrl-names = "aud_active", "aud_sleep";
 		pinctrl-0 = <&spkr_1_sd_n_active>;
 		pinctrl-1 = <&spkr_1_sd_n_sleep>;
-	};
-
-	aw87xxx_pa_reset_gpio {
-		compatible = "longcheer,lct_pinctrl";
-		audio-reset-pin = <&wsa881x_analog_reset_gpio>;
-		status = "okay";
+		status = "disable";
 	};
 
 	wsa881x_analog_clk: wsa_ana_clk {

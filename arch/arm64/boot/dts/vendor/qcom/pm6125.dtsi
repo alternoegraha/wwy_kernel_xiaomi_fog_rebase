@@ -168,7 +168,7 @@
 		#size-cells = <0>;
 
 		pm6125_pwm: qcom,pwms@b300 {
-			status = "okay";
+			status = "disabled";
 			compatible = "qcom,pwm-lpg";
 			reg = <0xb300 0x100>;
 			reg-names = "lpg-base";
