@@ -33,7 +33,7 @@
 * 1.Included header files
 *****************************************************************************/
 #include "focaltech_core.h"
-#ifdef CONFIG_TOUCHSCREEN_COMMON
+#ifdef CONFIG_TP_COMMON
 #include <linux/input/tp_common.h>
 #endif
 
@@ -102,7 +102,7 @@ static struct fts_gesture_st fts_gesture_data;
 /*****************************************************************************
 * Static function prototypes
 *****************************************************************************/
-#ifdef CONFIG_TOUCHSCREEN_COMMON
+#ifdef CONFIG_TP_COMMON
 static ssize_t double_tap_show(struct kobject *kobj,
                                struct kobj_attribute *attr, char *buf)
 {
@@ -455,7 +455,7 @@ int fts_gesture_switch(struct input_dev *dev, unsigned int type, unsigned int co
 int fts_gesture_init(struct fts_ts_data *ts_data)
 {
     struct input_dev *input_dev = ts_data->input_dev;
-#ifdef CONFIG_TOUCHSCREEN_COMMON
+#ifdef CONFIG_TP_COMMON
     int ret;
 #endif
 
@@ -496,7 +496,7 @@ int fts_gesture_init(struct fts_ts_data *ts_data)
 
     fts_create_gesture_sysfs(ts_data->dev);
 
-#ifdef CONFIG_TOUCHSCREEN_COMMON
+#ifdef CONFIG_TP_COMMON
     ret = tp_common_set_double_tap_ops(&double_tap_ops);
     if (ret < 0) {
         FTS_ERROR("%s: Failed to create double_tap node err=%d\n",

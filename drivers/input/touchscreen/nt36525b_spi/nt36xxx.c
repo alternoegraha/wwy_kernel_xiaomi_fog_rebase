@@ -47,7 +47,7 @@
 #endif /* #if NVT_TOUCH_ESD_PROTECT */
 
 #if WAKEUP_GESTURE
-#ifdef CONFIG_TOUCHSCREEN_COMMON
+#ifdef CONFIG_TP_COMMON
 #include <linux/input/tp_common.h>
 #endif
 #endif
@@ -194,7 +194,7 @@ int nvt_gesture_switch(struct input_dev *dev, unsigned int type, unsigned int co
 	return 0;
 }
 
-#ifdef CONFIG_TOUCHSCREEN_COMMON
+#ifdef CONFIG_TP_COMMON
 static ssize_t double_tap_show(struct kobject *kobj,
                                struct kobj_attribute *attr, char *buf)
 {
@@ -2269,7 +2269,7 @@ static int32_t nvt_ts_probe(struct spi_device *client)
 		input_set_capability(ts->input_dev, EV_KEY, gesture_key_array[retry]);
 #endif
 
-#ifdef CONFIG_TOUCHSCREEN_COMMON
+#ifdef CONFIG_TP_COMMON
 	ret = tp_common_set_double_tap_ops(&double_tap_ops);
 	if (ret < 0) {
 		NVT_ERR("%s: Failed to create double_tap node err=%d\n",
