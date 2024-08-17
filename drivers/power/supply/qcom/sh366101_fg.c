@@ -66,6 +66,7 @@ enum sh_fg_reg_idx {
 	SH_FG_REG_BAT_RMC,
 	SH_FG_REG_BAT_FCC,
 	SH_FG_REG_RESET,
+	SH_FG_REG_DESIGN_CAPCITY, /* 20211116, Ethan */
 	SH_FG_REG_SOC_CYCLE,
 	NUM_REGS,
 };
@@ -87,6 +88,7 @@ static u32 sh366101_regs[NUM_REGS] = {
     0x0E,		       /* BAT_FCC */
     CMDMASK_ALTMAC_W | 0x41,   /* RESET */
     0x1A,		       /* SOC_CYCLE */
+	0x3C,		       /* SH_FG_REG_DESIGN_CAPCITY. 20211116, Ethan */
 };
 
 enum sh_fg_device {
@@ -897,6 +899,20 @@ static s32 fg_read_rmc(struct sh_fg_chip* sm)
 	return (s32)((s16)data * MA_TO_UA);
 }
 
+static s32 fg_read_designcap(struct sh_fg_chip* sm) /* 20211108, Ethan */
+{
+	int ret;
+	u16 data = 0;
+
+	ret = fg_read_sbs_word(sm, sm->regs[SH_FG_REG_DESIGN_CAPCITY], &data);
+	if (ret < 0) {
+		pr_err("could not read DesignCap, ret=%d\n", ret);
+		return ret;
+	}
+
+	return (s32)((s16)data * MA_TO_UA);
+}
+
 #if !(IS_PACK_ONLY)
 static s32 get_battery_status(struct sh_fg_chip* sm)
 {
@@ -993,6 +1009,8 @@ static enum power_supply_property fg_props[] = {
 	POWER_SUPPLY_PROP_CHARGE_FULL,
 	POWER_SUPPLY_PROP_HEALTH,
 	POWER_SUPPLY_PROP_TECHNOLOGY,
+	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
+	POWER_SUPPLY_PROP_CHARGE_COUNTER,
 	POWER_SUPPLY_PROP_RESISTANCE_ID,
 	POWER_SUPPLY_PROP_SHUTDOWN_DELAY,
 };
@@ -1113,6 +1131,14 @@ static s32 fg_get_property(struct power_supply* psy, enum power_supply_property 
 			sm->batt_fcc = ret;
 		val->intval = sm->batt_fcc;
 		mutex_unlock(&sm->data_lock);
+		break;
+
+	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+		val->intval = fg_read_designcap(sm);
+		break;
+
+	case POWER_SUPPLY_PROP_CHARGE_COUNTER:
+		val->intval = fg_read_rmc(sm);
 		break;
 
 	case POWER_SUPPLY_PROP_HEALTH:
@@ -1294,6 +1320,7 @@ static void fg_refresh_status(struct sh_fg_chip* sm)
 
 	if (sm->batt_present) {
 		fg_read_gaugeinfo_block(sm); /* 20211016, Ethan */
+		fg_read_designcap(sm);
 		sm->batt_soc = fg_read_soc(sm);
 		sm->batt_ocv = fg_read_ocv(sm);
 		sm->batt_volt = fg_read_volt(sm);
