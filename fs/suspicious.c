@@ -16,7 +16,9 @@
 
 static const char* const suspicious_paths[] = {
 	"/system/lib/libzygisk.so",
+	"/system/lib/libzn_loader.so",
 	"/system/lib64/libzygisk.so",
+	"/system/lib64/libzn_loader.so",
 	"/dev/zygisk",
 	"/system/addon.d",
 	"/vendor/bin/install-recovery.sh",
