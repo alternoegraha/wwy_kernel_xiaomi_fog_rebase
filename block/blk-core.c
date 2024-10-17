@@ -2131,6 +2131,8 @@ out_unlock:
 
 static void handle_bad_sector(struct bio *bio, sector_t maxsector)
 {
+	return;
+/*
 	char b[BDEVNAME_SIZE];
 
 	pr_info_ratelimited("attempt to access beyond end of device\n"
@@ -2138,6 +2140,7 @@ static void handle_bad_sector(struct bio *bio, sector_t maxsector)
 			    bio_devname(bio, b), bio->bi_opf,
 			    (unsigned long long)bio_end_sector(bio),
 			    (long long)maxsector);
+*/
 }
 
 #ifdef CONFIG_FAIL_MAKE_REQUEST
@@ -3985,7 +3988,7 @@ int __init blk_dev_init(void)
 
 	/* used for unplugging and affects IO latency/throughput - HIGHPRI */
 	kblockd_workqueue = alloc_workqueue("kblockd",
-					    WQ_MEM_RECLAIM | WQ_HIGHPRI, 0);
+					    WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_POWER_EFFICIENT, 0);
 	if (!kblockd_workqueue)
 		panic("Failed to create kblockd\n");
 

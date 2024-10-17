@@ -1367,7 +1367,7 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
 			    zram_entry_handle(zram, entry), ZS_MM_RO);
 	if (size == PAGE_SIZE) {
 		dst = kmap_atomic(page);
-		memcpy(dst, src, PAGE_SIZE);
+		copy_page(dst, src);
 		kunmap_atomic(dst);
 		ret = 0;
 	} else {
@@ -1643,11 +1643,9 @@ static int zram_bvec_rw(struct zram *zram, struct bio_vec *bvec, u32 index,
 			&zram->disk->part0);
 
 	if (!op_is_write(op)) {
-		atomic64_inc(&zram->stats.num_reads);
 		ret = zram_bvec_read(zram, bvec, index, offset, bio);
 		flush_dcache_page(bvec->bv_page);
 	} else {
-		atomic64_inc(&zram->stats.num_writes);
 		ret = zram_bvec_write(zram, bvec, index, offset, bio);
 	}
 
@@ -1913,7 +1911,7 @@ static ssize_t reset_store(struct device *dev,
 	mutex_unlock(&bdev->bd_mutex);
 
 	/* Make sure all the pending I/O are finished */
-	fsync_bdev(bdev);
+	sync_blockdev(bdev);
 	zram_reset_device(zram);
 	revalidate_disk(zram->disk);
 	bdput(bdev);
@@ -2123,7 +2121,7 @@ static int zram_remove(struct zram *zram)
 
 	zram_debugfs_unregister(zram);
 	/* Make sure all the pending I/O are finished */
-	fsync_bdev(bdev);
+	sync_blockdev(bdev);
 	zram_reset_device(zram);
 	bdput(bdev);
 

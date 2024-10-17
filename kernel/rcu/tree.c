@@ -3933,7 +3933,7 @@ static int __init rcu_spawn_gp_kthread(void)
 		rsp->gp_kthread = t;
 		if (kthread_prio) {
 			sp.sched_priority = kthread_prio;
-			sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+			sched_setscheduler_nocheck(t, SCHED_RR, &sp);
 		}
 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
 		wake_up_process(t);
@@ -4177,9 +4177,9 @@ void __init rcu_init(void)
 	}
 
 	/* Create workqueue for expedited GPs and for Tree SRCU. */
-	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
+	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_POWER_EFFICIENT | WQ_MEM_RECLAIM, 0);
 	WARN_ON(!rcu_gp_wq);
-	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
+	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_POWER_EFFICIENT | WQ_MEM_RECLAIM, 0);
 	WARN_ON(!rcu_par_gp_wq);
 }
 

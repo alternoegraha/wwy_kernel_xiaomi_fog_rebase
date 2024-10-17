@@ -606,8 +606,8 @@ enum {
 
 #define DEFAULT_RETRY_IO_COUNT	8	/* maximum retry read IO count */
 
-/* congestion wait timeout value, default: 20ms */
-#define	DEFAULT_IO_TIMEOUT	(msecs_to_jiffies(20))
+/* congestion wait timeout value, default: 6ms */
+#define	DEFAULT_IO_TIMEOUT	(msecs_to_jiffies(6))
 
 /* maximum retry quota flush count */
 #define DEFAULT_RETRY_QUOTA_FLUSH_COUNT		8
@@ -2410,7 +2410,7 @@ static inline void f2fs_copy_page(struct page *src, struct page *dst)
 	char *src_kaddr = kmap(src);
 	char *dst_kaddr = kmap(dst);
 
-	memcpy(dst_kaddr, src_kaddr, PAGE_SIZE);
+	copy_page(dst_kaddr, src_kaddr);
 	kunmap(dst);
 	kunmap(src);
 }

@@ -1126,7 +1126,7 @@ static int rcu_boost_kthread(void *arg)
 		if (spincnt > 10) {
 			rnp->boost_kthread_status = RCU_KTHREAD_YIELDING;
 			trace_rcu_utilization(TPS("End boost kthread@rcu_yield"));
-			schedule_timeout_interruptible(2);
+			schedule_timeout_idle(2);
 			trace_rcu_utilization(TPS("Start boost kthread@rcu_yield"));
 			spincnt = 0;
 		}
@@ -1238,7 +1238,7 @@ static int rcu_spawn_one_boost_kthread(struct rcu_state *rsp,
 	rnp->boost_kthread_task = t;
 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
 	sp.sched_priority = kthread_prio;
-	sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+	sched_setscheduler_nocheck(t, SCHED_RR, &sp);
 	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
 	return 0;
 }
@@ -1255,7 +1255,7 @@ static void rcu_cpu_kthread_setup(unsigned int cpu)
 	struct sched_param sp;
 
 	sp.sched_priority = kthread_prio;
-	sched_setscheduler_nocheck(current, SCHED_FIFO, &sp);
+	sched_setscheduler_nocheck(current, SCHED_RR, &sp);
 }
 
 static void rcu_cpu_kthread_park(unsigned int cpu)

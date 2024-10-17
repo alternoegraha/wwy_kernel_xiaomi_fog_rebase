@@ -1045,7 +1045,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
 		return -ESRCH;
 
 	mutex_lock(&oom_adj_mutex);
-	if (legacy) {
+	if (unlikely(legacy)) {
 		if (oom_adj < task->signal->oom_score_adj &&
 				!capable(CAP_SYS_RESOURCE)) {
 			err = -EACCES;
@@ -1084,7 +1084,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
 	}
 
 	task->signal->oom_score_adj = oom_adj;
-	if (!legacy && has_capability_noaudit(current, CAP_SYS_RESOURCE))
+	if (likely(!legacy) && has_capability_noaudit(current, CAP_SYS_RESOURCE))
 		task->signal->oom_score_adj_min = (short)oom_adj;
 	trace_oom_score_adj_update(task);
 
@@ -1103,7 +1103,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
 			task_lock(p);
 			if (!p->vfork_done && process_shares_mm(p, mm)) {
 				p->signal->oom_score_adj = oom_adj;
-				if (!legacy && has_capability_noaudit(current, CAP_SYS_RESOURCE))
+				if (likely(!legacy) && has_capability_noaudit(current, CAP_SYS_RESOURCE))
 					p->signal->oom_score_adj_min = (short)oom_adj;
 			}
 			task_unlock(p);
@@ -3417,7 +3417,7 @@ static const struct pid_entry tgid_base_stuff[] = {
 	REG("mountinfo",  S_IRUGO, proc_mountinfo_operations),
 	REG("mountstats", S_IRUSR, proc_mountstats_operations),
 #ifdef CONFIG_PROCESS_RECLAIM
-	REG("reclaim", 0222, proc_reclaim_operations),
+	REG("reclaim", S_IWUGO, proc_reclaim_operations),
 #endif
 #ifdef CONFIG_PROC_PAGE_MONITOR
 	REG("clear_refs", S_IWUSR, proc_clear_refs_operations),
