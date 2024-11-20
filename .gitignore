@@ -63,6 +63,12 @@ modules.builtin
 #
 /*.spec
 
+# Ignored Paths
+out/
+tc/
+log.txt
+*.zip
+
 #
 # Debian directory (make deb-pkg)
 #
