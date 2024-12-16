@@ -50,6 +50,11 @@ struct user_struct {
 
 	ANDROID_KABI_RESERVE(1);
 	ANDROID_KABI_RESERVE(2);
+
+#ifdef CONFIG_KSU_SUSFS
+	u64 android_kabi_reserved2;
+#endif
+
 };
 
 extern int uids_sysfs_init(void);
