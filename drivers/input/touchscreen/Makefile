@@ -114,8 +114,11 @@ obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_DSX) += synaptics_dsx/
 obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_TCM)	+= synaptics_tcm/
 #obj-$(CONFIG_TOUCHSCREEN_FTS)	+= focaltech_touch/
 obj-$(CONFIG_TOUCHSCREEN_NT36XXX)	+= nt36xxx/
-obj-$(CONFIG_TOUCHSCREEN_FTS)	+= ft3418_i2c/
 obj-$(CONFIG_TOUCHSCREEN_COMMON)             += xiaomi/
+ifeq ($(CONFIG_TARGET_PROJECT_K7T),y)
+obj-$(CONFIG_TOUCHSCREEN_FTS)	+= ft3418_i2c/
+endif
+ifeq ($(CONFIG_TARGET_PROJECT_C3Q),y)
 obj-$(CONFIG_TOUCHSCREEN_NT36xxx_HOSTDL_SPI)   += nt36525b_spi/
 obj-$(CONFIG_TOUCHSCREEN_FTS_SPI)	+= ft8006s_spi/
 obj-$(CONFIG_TOUCHSCREEN_COMMON)	    +=  lct_tp_info.o
@@ -124,4 +127,5 @@ obj-$(CONFIG_TOUCHSCREEN_COMMON)	    +=  lct_tp_work.o
 obj-$(CONFIG_TOUCHSCREEN_COMMON)	    +=  lct_tp_palm.o
 obj-$(CONFIG_TOUCHSCREEN_COMMON)        +=  lct_tp_gesture.o
 obj-$(CONFIG_TOUCHSCREEN_COMMON)	    +=  lct_tp_grip_area.o
+endif
 obj-$(CONFIG_TP_COMMON)	+= tp_common.o
