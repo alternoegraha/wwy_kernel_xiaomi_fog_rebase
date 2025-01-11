@@ -1,4 +1,30 @@
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+ifeq ($(CONFIG_ARCH_KHAJE),y)
+
+ifeq ($(CONFIG_TARGET_PROJECT_C3Q),y)
+dtbo-$(CONFIG_TARGET_PROJECT_C3Q) += \
+        fog-khaje-idp-nopmi-overlay.dtbo \
+		rain-khaje-idp-nopmi-overlay.dtbo \
+		wind-khaje-idp-nopmi-overlay.dtbo
+fog-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
+rain-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
+wind-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
+endif
+
+ifeq ($(CONFIG_TARGET_PROJECT_K7T),y)
+dtbo-$(CONFIG_TARGET_PROJECT_K7T) += \
+        spes-khaje-idp-nopmi-overlay.dtbo \
+        spesn-khaje-idp-nopmi-overlay.dtbo \
+        spes-sm5602-khaje-idp-nopmi-overlay.dtbo
+spes-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
+spesn-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
+spes-sm5602-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
+endif
+
+endif
+endif
+
+ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_KONA) += \
                 kona-cdp-overlay.dtbo \
                 kona-cdp-lcd-overlay.dtbo \
@@ -295,10 +321,7 @@ ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 		khajeg-idp-nopmi-overlay.dtbo \
 		khajeg-idp-usbc-overlay.dtbo \
 		khajeg-idp-pm8010-overlay.dtbo \
-		khajeg-idps-display-90hz-overlay.dtbo \
-		fog-khaje-idp-nopmi-overlay.dtbo \
-		rain-khaje-idp-nopmi-overlay.dtbo \
-		wind-khaje-idp-nopmi-overlay.dtbo
+		khajeg-idps-display-90hz-overlay.dtbo
 
 khaje-atp-overlay.dtbo-base := khaje.dtb
 khaje-idp-overlay.dtbo-base := khaje.dtb
@@ -340,10 +363,6 @@ khajeg-idp-nopmi-overlay.dtbo-base := khajeg.dtb
 khajeg-idp-pm8010-overlay.dtbo-base := khajeg.dtb
 khajeg-idp-usbc-overlay.dtbo-base := khajeg.dtb
 khajeg-idps-display-90hz-overlay.dtbo-base := khajeg.dtb
-spes-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
-fog-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
-rain-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
-wind-khaje-idp-nopmi-overlay.dtbo-base := khaje.dtb
 else
 dtb-$(CONFIG_ARCH_KHAJE) += khaje-idp.dtb \
 		khaje-qrd.dtb \
