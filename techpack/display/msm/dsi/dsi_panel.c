@@ -392,6 +392,7 @@ static int dsi_panel_reset(struct dsi_panel *panel)
 			goto exit;
 		}
 	}
+#ifdef CONFIG_TARGET_PROJECT_C3Q
 	if (gpio_is_valid(r_config->lcm_enp_gpio)) {
 		rc = gpio_direction_output(r_config->lcm_enp_gpio, 1);
 		if (rc) {
@@ -411,6 +412,7 @@ static int dsi_panel_reset(struct dsi_panel *panel)
 	}
 
 	msleep(5);
+#endif
 	usleep_range(10000, 10010);
 	if (r_config->count) {
 		rc = gpio_direction_output(r_config->reset_gpio,
@@ -544,11 +546,13 @@ error_disable_gpio:
 	if (gpio_is_valid(panel->bl_config.en_gpio))
 		gpio_set_value(panel->bl_config.en_gpio, 0);
 
+#ifdef CONFIG_TARGET_PROJECT_C3Q
 	if (gpio_is_valid(panel->reset_config.lcm_enp_gpio))
 		gpio_set_value(panel->reset_config.lcm_enp_gpio, 0);
 
 	if (gpio_is_valid(panel->reset_config.lcm_enn_gpio))
 		gpio_set_value(panel->reset_config.lcm_enn_gpio, 0);
+#endif
 
 	(void)dsi_panel_set_pinctrl_state(panel, false);
 
@@ -610,6 +614,7 @@ static int dsi_panel_power_off(struct dsi_panel *panel)
 				 rc);
 	}
 
+#ifdef CONFIG_TARGET_PROJECT_C3Q
 	if (!gesture_flag) 
 	{
 		msleep(10);
@@ -628,16 +633,18 @@ static int dsi_panel_power_off(struct dsi_panel *panel)
 			gpio_direction_output(panel->reset_config.lcm_enp_gpio, 0);
 		}
 	}
+#endif
 
 //for dt2w nvt but not for fts variant
-if(fts_ts_variant){
-	rc = dsi_panel_set_pinctrl_state(panel, false);
-	if (rc) {
-		DSI_ERR("[%s] failed set pinctrl state, rc=%d\n", panel->name,
-		       rc);
+#ifdef CONFIG_TARGET_PROJECT_C3Q
+	if(fts_ts_variant){
+		rc = dsi_panel_set_pinctrl_state(panel, false);
+		if (rc) {
+			DSI_ERR("[%s] failed set pinctrl state, rc=%d\n", panel->name,
+				rc);
+		}
 	}
-
-}
+#endif
 	rc = dsi_pwr_enable_regulator(&panel->power_info, false);
 	if (rc)
 		DSI_ERR("[%s] failed to enable vregs, rc=%d\n",
@@ -791,12 +798,14 @@ static int dsi_panel_update_backlight(struct dsi_panel *panel,
 	dsi = &panel->mipi_device;
 	bl = &panel->bl_config;
 
+#ifdef CONFIG_TARGET_PROJECT_C3Q
 	// from https://github.com/MiCode/vendor_opensource_display-drivers/blob/xun-t-oss/msm/dsi/dsi_panel.c
 	//bl_lvl = bl_lvl * 9 / 10;
 	if (panel->bl_config.bl_move_high_8b) {
         	bl_lvl = bl_lvl << 5;
 		bl_lvl = (((bl_lvl & 0xff00)) | ((bl_lvl & 0xe0) >> 4));
 	}
+#endif
 
 	if (panel->bl_config.bl_inverted_dbv)
 		bl_lvl = (((bl_lvl & 0xff) << 8) | (bl_lvl >> 8));
@@ -2293,16 +2302,20 @@ static int dsi_panel_parse_reset_sequence(struct dsi_panel *panel)
 	const u32 *arr;
 	struct dsi_parser_utils *utils = &panel->utils;
 	struct dsi_reset_seq *seq;
+#ifdef CONFIG_TARGET_PROJECT_C3Q
 	bool fts_reset_seq = false;
+#endif
 
 	if (panel->host_config.ext_bridge_mode)
 		return 0;
 	
+#ifdef CONFIG_TARGET_PROJECT_C3Q
 	fts_reset_seq = utils->read_bool(utils->data,
 		"qcom,mdss-dsi-focaltech-reset-sequence");
 	
 	if (fts_ts_variant && !fts_reset_seq) 
 		return 0;
+#endif
 
 	arr = utils->get_property(utils->data,
 			"qcom,mdss-dsi-reset-sequence", &length);
@@ -2500,6 +2513,7 @@ static int dsi_panel_parse_gpios(struct dsi_panel *panel)
 		}
 	}
 
+#ifdef CONFIG_TARGET_PROJECT_C3Q
 	panel->reset_config.lcm_enp_gpio = utils->get_named_gpio(utils->data,
 					"qcom,lcm-enp-gpio", 0);
 	if (!gpio_is_valid(panel->reset_config.lcm_enp_gpio)) {
@@ -2513,6 +2527,7 @@ static int dsi_panel_parse_gpios(struct dsi_panel *panel)
 			pr_err("[%s] lcm-enn-gpio is not set, rc=%d\n",
 				 panel->name, rc);
 	}
+#endif
 
 	panel->reset_config.lcd_mode_sel_gpio = utils->get_named_gpio(
 		utils->data, mode_set_gpio_name, 0);
@@ -2665,8 +2680,10 @@ static int dsi_panel_parse_bl_config(struct dsi_panel *panel)
 	panel->bl_config.bl_inverted_dbv = utils->read_bool(utils->data,
 		"qcom,mdss-dsi-bl-inverted-dbv");
 
+#ifdef CONFIG_TARGET_PROJECT_C3Q
 	panel->bl_config.bl_move_high_8b = utils->read_bool(utils->data,
 		"qcom,mdss-dsi-bl-move-high-8b");
+#endif
 
 	if (panel->bl_config.type == DSI_BACKLIGHT_PWM) {
 		rc = dsi_panel_parse_bl_pwm_config(panel);
