@@ -25,7 +25,7 @@
 #define CLK_HW_DIV			2
 #define GT_IRQ_STATUS			BIT(2)
 #define MAX_FN_SIZE			20
-#define LIMITS_POLLING_DELAY_MS		4
+#define LIMITS_POLLING_DELAY_MS		1
 
 #define CYCLE_CNTR_OFFSET(c, m, acc_count)				\
 			(acc_count ? ((c - cpumask_first(m) + 1) * 4) : 0)
@@ -180,7 +180,7 @@ static void limits_dcvsh_poll(struct work_struct *work)
 
 	dcvsh_freq = qcom_cpufreq_hw_get(cpu);
 
-	if (freq_limit != dcvsh_freq) {
+	if (freq_limit < dcvsh_freq) {
 		mod_delayed_work(system_highpri_wq, &c->freq_poll_work,
 				msecs_to_jiffies(LIMITS_POLLING_DELAY_MS));
 	} else {
@@ -436,7 +436,7 @@ static void qcom_cpufreq_ready(struct cpufreq_policy *policy)
 
 static struct cpufreq_driver cpufreq_qcom_hw_driver = {
 	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK |
-			  CPUFREQ_HAVE_GOVERNOR_PER_POLICY,
+			  CPUFREQ_HAVE_GOVERNOR_PER_POLICY | CPUFREQ_CONST_LOOPS,
 	.verify		= cpufreq_generic_frequency_table_verify,
 	.target_index	= qcom_cpufreq_hw_target_index,
 	.get		= qcom_cpufreq_hw_get,
@@ -522,13 +522,11 @@ static int qcom_cpufreq_hw_read_lut(struct platform_device *pdev,
 		 */
 		if (i > 0 && c->table[i - 1].frequency ==
 				c->table[i].frequency) {
-			if (prev_cc == core_count) {
 				struct cpufreq_frequency_table *prev =
 							&c->table[i - 1];
 
 				if (prev_freq == CPUFREQ_ENTRY_INVALID)
 					prev->flags = CPUFREQ_BOOST_FREQ;
-			}
 			break;
 		}
 

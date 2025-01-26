@@ -33,7 +33,7 @@ unsigned int sysctl_sched_coloc_busy_hyst_max_ms = 5000;
 static DEFINE_PER_CPU(atomic64_t, busy_hyst_end_time) = ATOMIC64_INIT(0);
 static DEFINE_PER_CPU(u64, hyst_time);
 
-#define NR_THRESHOLD_PCT		15
+#define NR_THRESHOLD_PCT		40
 #define MAX_RTGB_TIME (sysctl_sched_coloc_busy_hyst_max_ms * NSEC_PER_MSEC)
 
 /**
@@ -226,3 +226,4 @@ u64 sched_lpm_disallowed_time(int cpu)
 
 	return 0;
 }
+EXPORT_SYMBOL_GPL(sched_lpm_disallowed_time);

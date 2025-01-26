@@ -2653,6 +2653,7 @@ int register_cpu_cycle_counter_cb(struct cpu_cycle_counter_cb *cb)
 				    CPUFREQ_TRANSITION_NOTIFIER);
 	return 0;
 }
+EXPORT_SYMBOL_GPL(register_cpu_cycle_counter_cb);
 
 static void transfer_busy_time(struct rq *rq, struct related_thread_group *grp,
 				struct task_struct *p, int event);
@@ -3099,7 +3100,7 @@ unsigned long do_thermal_cap(int cpu, unsigned long thermal_max_freq)
 		}
 
 		nr_cap_states = em_pd_nr_cap_states(pd->em_pd);
-		scale_cpu = arch_scale_cpu_capacity(NULL, cpu);
+		scale_cpu = arch_scale_cpu_capacity(cpu);
 		freq = pd->em_pd->table[nr_cap_states - 1].frequency;
 		max_cap[cpu] = DIV_ROUND_UP(scale_cpu * freq,
 					cpu_max_table_freq[cpu]);
@@ -3139,6 +3140,7 @@ void sched_update_cpu_freq_min_max(const cpumask_t *cpus, u32 fmin, u32 fmax)
 	if (update_capacity)
 		walt_cpus_capacity_changed(cpus);
 }
+EXPORT_SYMBOL_GPL(sched_update_cpu_freq_min_max);
 
 void note_task_waking(struct task_struct *p, u64 wallclock)
 {
@@ -3538,7 +3540,7 @@ void walt_fill_ta_data(struct core_ctl_notif_data *data)
 
 	min_cap_cpu = this_rq()->rd->min_cap_orig_cpu;
 	if (min_cap_cpu != -1)
-		scale = arch_scale_cpu_capacity(NULL, min_cap_cpu);
+		scale = arch_scale_cpu_capacity(min_cap_cpu);
 
 	data->coloc_load_pct = div64_u64(total_demand * 1024 * 100,
 			       (u64)sched_ravg_window * scale);
@@ -3550,7 +3552,7 @@ fill_util:
 		if (i == MAX_CLUSTERS)
 			break;
 
-		scale = arch_scale_cpu_capacity(NULL, fcpu);
+		scale = arch_scale_cpu_capacity(fcpu);
 		data->ta_util_pct[i] = div64_u64(cluster->aggr_grp_load * 1024 *
 				       100, (u64)sched_ravg_window * scale);
 
