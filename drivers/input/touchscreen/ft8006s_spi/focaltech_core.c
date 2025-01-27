@@ -71,6 +71,7 @@ extern touchscreen_usb_plugin_data_t g_touchscreen_usb_pulgin;
 *****************************************************************************/
 struct fts_ts_data *fts_data;
 static bool delay_gesture = false;
+extern void set_fts_ts_variant(bool en);
 extern void set_lcd_reset_gpio_keep_high(bool en);
 
 int lct_fts_tp_gesture_callback(bool flag)
@@ -1774,6 +1775,7 @@ static int fts_ts_probe(struct spi_device *spi)
     }
 
     FTS_INFO("Touch Screen(SPI BUS) driver prboe successfully");
+    set_fts_ts_variant(true);
     return 0;
 }
 

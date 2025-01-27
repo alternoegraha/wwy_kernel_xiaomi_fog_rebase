@@ -2267,6 +2267,9 @@ static int dsi_panel_parse_reset_sequence(struct dsi_panel *panel)
 #ifdef CONFIG_TARGET_PROJECT_C3Q
 	fts_reset_seq = utils->read_bool(utils->data,
 		"qcom,mdss-dsi-focaltech-reset-sequence");
+
+	if (fts_ts_variant && !fts_reset_seq) 
+		return 0;
 #endif
 
 	arr = utils->get_property(utils->data,
