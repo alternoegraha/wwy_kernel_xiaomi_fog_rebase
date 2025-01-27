@@ -35,15 +35,6 @@
 
 #include "nt36xxx_mem_map.h"
 
-#ifdef CONFIG_MTK_SPI
-/* Please copy mt_spi.h file under mtk spi driver folder */
-#include "mt_spi.h"
-#endif
-
-#ifdef CONFIG_SPI_MT65XX
-#include <linux/platform_data/spi-mt65xx.h>
-#endif
-
 #define NVT_DEBUG 1
 
 //---GPIO number---
@@ -194,12 +185,6 @@ struct nvt_ts_data {
 //	struct regulator *pwr_ibb; /* VSN -5V */
 #endif
 //struct mutex reg_lock;
-#ifdef CONFIG_MTK_SPI
-	struct mt_chip_conf spi_ctrl;
-#endif
-#ifdef CONFIG_SPI_MT65XX
-    struct mtk_chip_config spi_ctrl;
-#endif
 	struct workqueue_struct *event_wq;
 	struct work_struct suspend_work;
 	struct work_struct resume_work;
