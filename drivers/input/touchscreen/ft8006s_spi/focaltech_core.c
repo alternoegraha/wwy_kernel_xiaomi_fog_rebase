@@ -766,7 +766,7 @@ static irqreturn_t fts_irq_handler(int irq, void *data)
     int ret = 0;
     struct fts_ts_data *ts_data = fts_data;
 
-    if ((ts_data->suspended) && (ts_data->pm_suspend)) {
+    if ((ts_data->gesture_mode) && (ts_data->pm_suspend)) {
         ret = wait_for_completion_timeout(
                   &ts_data->pm_completion,
                   msecs_to_jiffies(FTS_TIMEOUT_COMERR_PM));
