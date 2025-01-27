@@ -5679,9 +5679,6 @@ static int dsi_display_bind(struct device *dev,
 
 	/* register te irq handler */
 	dsi_display_register_te_irq(display);
-#ifdef CONFIG_TARGET_PROJECT_C3Q
-	set_lct_tp_lockdown_info_callback(lct_tp_lockdown_info_callback);
-#endif
 
 	goto error;
 
