@@ -600,6 +600,14 @@ static int dsi_panel_power_off(struct dsi_panel *panel)
 				 rc);
 	}
 
+#ifdef CONFIG_TARGET_PROJECT_C3Q
+	rc = dsi_panel_set_pinctrl_state(panel, false);
+	if (rc) {
+			DSI_ERR("[%s] failed set pinctrl state, rc=%d\n", panel->name,
+		       rc);
+	}
+#endif
+
 	rc = dsi_pwr_enable_regulator(&panel->power_info, false);
 	if (rc)
 		DSI_ERR("[%s] failed to enable vregs, rc=%d\n",
