@@ -197,7 +197,7 @@
  * ESD check & protection
  * default: disable
  */
-#define FTS_ESDCHECK_EN                         1
+#define FTS_ESDCHECK_EN                         0
 
 /*
  * Production test enable
@@ -235,16 +235,6 @@
  * Numbers of modules support
  */
 #define FTS_GET_MODULE_NUM                      0
-
-/*
- * enable/disable touchpad
- */
-#define LCT_TP_WORK_EN                          1
-
-/*
-* enable/disable 'grip area' feature
-*/
-#define LCT_TP_GRIP_AREA_EN                     1
 
 /*
  * enable tp usb plugin feature
