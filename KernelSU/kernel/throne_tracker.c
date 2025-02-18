@@ -106,7 +106,7 @@ struct apk_path_hash {
 	struct list_head list;
 };
 
-static struct list_head apk_path_hash_list = LIST_HEAD_INIT(apk_path_hash_list);
+static struct list_head apk_path_hash_list;
 
 struct my_dir_context {
 	struct dir_context ctx;
@@ -211,6 +211,7 @@ void search_manager(const char *path, int depth, struct list_head *uid_data)
 	int i, stop = 0;
 	struct list_head data_path_list;
 	INIT_LIST_HEAD(&data_path_list);
+	INIT_LIST_HEAD(&apk_path_hash_list);
 
 	// Initialize APK cache list
 	struct apk_path_hash *pos, *n;
@@ -290,7 +291,6 @@ void ksu_track_throne()
 
 	struct list_head uid_list;
 	INIT_LIST_HEAD(&uid_list);
-	INIT_LIST_HEAD(&apk_path_hash_list);
 
 	char chr = 0;
 	loff_t pos = 0;
